@@ -1,0 +1,4 @@
+py-bcrypt==0.2
+pysqlite==2.6.3
+redis==2.6.0
+requests==0.13.5
