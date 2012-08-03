@@ -1,4 +1,5 @@
 py-bcrypt==0.2
-pysqlite==2.6.3
 redis==2.6.0
 requests==0.13.5
+-e git+git://github.com/martinblech/xmltodict.git@069cbc971b#egg=xmltodict
+-e git+git://supybot.git.sourceforge.net/gitroot/supybot/supybot@ca23cbb774#egg=supybot
