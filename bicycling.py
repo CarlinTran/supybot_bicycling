@@ -98,8 +98,6 @@ class Bicycling(callbacks.Plugin):
         '''
         if offender == 'bikeb0t':
             text = 'slaps %s' % msg.nick
-        elif msg.nick == "krisfremen":
-            text = 'smashes a beer over %s\'s head' % msg.nick
         else:
             text = 'holds %s.' % (offender)
         irc.reply(text, prefixNick=False, action=True, to='#/r/bicycling')
@@ -111,8 +109,6 @@ class Bicycling(callbacks.Plugin):
         Gets <nick> a beer.
         '''
         if offender == 'bikeb0t':
-            text = 'smashes a beer over %s\'s head' % msg.nick
-        elif msg.nick == "krisfremen":
             text = 'smashes a beer over %s\'s head' % msg.nick
         else:
             text = 'gets %s a beer' % (offender)
@@ -126,8 +122,6 @@ class Bicycling(callbacks.Plugin):
         '''
         if offender == 'bikeb0t':
             text = 'pours burning tea over %s\'s head' % msg.nick
-        elif msg.nick == "krisfremen":
-            text = 'smashes a beer over %s\'s head' % msg.nick
         else:
             text = 'gets %s a tea' % (offender)
         irc.reply(text, prefixNick=False, action=True, to='#/r/bicycling')
