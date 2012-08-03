@@ -17,12 +17,12 @@ import supybot.ircutils as ircutils
 import supybot.callbacks as callbacks
 import supybot.schedule as schedule
 
-class Reddit(callbacks.Plugin):
-    '''Add the help for '@plugin help Reddit' here
+class Bicycling(callbacks.Plugin):
+    '''Add the help for '@plugin help Bicycling' here
     This should describe *how* to use this plugin.'''
     threaded = True
     def __init__(self, irc):
-        self.__parent = super(Reddit, self)
+        self.__parent = super(Bicycling, self)
         self.__parent.__init__(irc)
         self.redis_server = redis.Redis('localhost')
         self.errors = {
@@ -90,6 +90,18 @@ class Reddit(callbacks.Plugin):
         else:
             irc.reply('You need to be an op to do that.')
     clear_host = wrap(clear_host, ['nick'])
+
+    def hold(self, irc, msg, args, offender):
+        '''<nick>
+
+        Gets <nick> a hold.
+        '''
+        if offender == 'bikeb0t':
+            text = 'slaps %s' % msg.nick
+        else:
+            text = 'holds %s.' % (offender)
+        irc.reply(text, prefixNick=False, action=True, to='#/r/bicycling')
+    hold = wrap(hold, ['nick'])
 
     def beer(self, irc, msg, args, offender):
         '''<nick>
@@ -242,5 +254,5 @@ def getWeather(area_dirty):
 
 
 
-Class = Reddit
+Class = Bicycling
 # vim:set shiftwidth=4 softtabstop=4 expandtab:
