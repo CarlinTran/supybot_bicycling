@@ -3,7 +3,7 @@ import redis
 import string
 import re
 import os
-import urllib2
+import requests
 import httplib
 import json
 import time
@@ -98,6 +98,8 @@ class Bicycling(callbacks.Plugin):
         '''
         if offender == 'bikeb0t':
             text = 'slaps %s' % msg.nick
+        elif msg.nick == "krisfremen":
+            text = 'smashes a beer over %s\'s head' % msg.nick
         else:
             text = 'holds %s.' % (offender)
         irc.reply(text, prefixNick=False, action=True, to='#/r/bicycling')
@@ -109,6 +111,8 @@ class Bicycling(callbacks.Plugin):
         Gets <nick> a beer.
         '''
         if offender == 'bikeb0t':
+            text = 'smashes a beer over %s\'s head' % msg.nick
+        elif msg.nick == "krisfremen":
             text = 'smashes a beer over %s\'s head' % msg.nick
         else:
             text = 'gets %s a beer' % (offender)
@@ -122,6 +126,8 @@ class Bicycling(callbacks.Plugin):
         '''
         if offender == 'bikeb0t':
             text = 'pours burning tea over %s\'s head' % msg.nick
+        elif msg.nick == "krisfremen":
+            text = 'smashes a beer over %s\'s head' % msg.nick
         else:
             text = 'gets %s a tea' % (offender)
         irc.reply(text, prefixNick=False, action=True, to='#/r/bicycling')
@@ -201,8 +207,8 @@ have a question, ask it and then stick around for an answer.' % msg.nick)
 
     def _do_reddit(self, account, cmd):
         try:
-            reddit_data = urllib2.urlopen('http://www.reddit.com/user/%s/about.json' % account).read()
-        except urllib2.HTTPError:
+            reddit_data = requests.get('http://www.reddit.com/user/%s/about.json' % account).text
+        except:
             return 'No reddit account for %s. You can set your reddit account with !reddit set <username>' % account
         else:
             js = json.loads(reddit_data)
@@ -231,10 +237,8 @@ def getWeather(area_dirty):
     import xmltodict  #importing here for easy sharing.   https://github.com/martinblech/xmltodict
     try:
         area = re.sub('[\W_]+', '+', area_dirty)
-        file = urllib2.urlopen('http://www.google.com/ig/api?weather=%s' % area)
-        data = file.read()
-        file.close()
-        doc = xmltodict.parse(data)
+        resp = requests.get('http://www.google.com/ig/api?weather=%s' % area)
+        doc = xmltodict.parse(resp.text)
         weather = doc['xml_api_reply']['weather']
         current = weather['current_conditions']
         forecast = weather['forecast_information']
