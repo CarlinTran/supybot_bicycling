@@ -133,7 +133,7 @@ class Bicycling(callbacks.Plugin):
         gets weather for place
         '''
         #irc.reply('Go look out the window %s' % msg.nick, prefixNick=False, action=True, to='#/r/bicycling')
-        irc.reply(getWeather(location))
+        irc.reply(self.getWeather(location))
 
 
     weather = wrap(weather, ['text'])
@@ -169,7 +169,7 @@ class Bicycling(callbacks.Plugin):
         now = int(time.time())
         d = now - then
         minutes = d / 60
-        if self.Create_user(msg.nick) and minutes > 5:
+        if self.Create_user(msg.nick) and minutes > 20:
             irc.reply('Hey %s, it looks like nobody is talking now so if you \
 have a question, ask it and then stick around for an answer.' % msg.nick)
         if msg.nick == "chrisinajar":
@@ -223,32 +223,32 @@ have a question, ask it and then stick around for an answer.' % msg.nick)
 
 
 
-def getWeather(area_dirty):
-    """
-    Returns the current weather in a given location
-    """
-    # import re
-    import xmltodict  #importing here for easy sharing.   https://github.com/martinblech/xmltodict
-    try:
-        area = re.sub('[\W_]+', '+', area_dirty)
-        resp = requests.get('http://www.google.com/ig/api?weather=%s' % area)
-        doc = xmltodict.parse(resp.text)
-        weather = doc['xml_api_reply']['weather']
-        current = weather['current_conditions']
-        forecast = weather['forecast_information']
+    def getWeather(self, area_dirty):
+        """
+        Returns the current weather in a given location
+        """
+        # import re
+        import xmltodict  #importing here for easy sharing.   https://github.com/martinblech/xmltodict
+        try:
+            area = re.sub('[\W_]+', '+', area_dirty)
+            resp = requests.get('http://www.google.com/ig/api?weather=%s' % area)
+            doc = xmltodict.parse(resp.text)
+            weather = doc['xml_api_reply']['weather']
+            current = weather['current_conditions']
+            forecast = weather['forecast_information']
 
-        # Compile the great string to say the weather.
-        weather = "In %s it's %sC(%sF). The Sky is %s. Current condition of %s." % (
-            forecast['city']['@data'],
-            current['temp_c']['@data'],
-            current['temp_f']['@data'],
-            current['condition']['@data'],
-            current['wind_condition']['@data'],
-            #forecast['current_date_time']['@data']
-        )
-    except:
-        return "Cannot find weather information for %s" % area_dirty
-    return weather
+            # Compile the great string to say the weather.
+            weather = "In %s it's %sC(%sF). The Sky is %s. Current condition of %s." % (
+                forecast['city']['@data'],
+                current['temp_c']['@data'],
+                current['temp_f']['@data'],
+                current['condition']['@data'],
+                current['wind_condition']['@data'],
+                #forecast['current_date_time']['@data']
+            )
+        except:
+            return "Cannot find weather information for %s" % area_dirty
+        return weather
 
 
 
