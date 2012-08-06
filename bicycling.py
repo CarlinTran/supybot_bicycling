@@ -132,8 +132,11 @@ class Bicycling(callbacks.Plugin):
 
         gets weather for place
         '''
-        #irc.reply('Go look out the window %s' % msg.nick, prefixNick=False, action=True, to='#/r/bicycling')
-        irc.reply(self.getWeather(location))
+        user_location = str(self._get_data(msg.args[1].split()[1], "location")).strip()
+        if user_location and user_location != "None":
+            irc.reply(self.getWeather(user_location))
+        else:
+            irc.reply(self.getWeather(location))
 
 
     weather = wrap(weather, ['text'])
