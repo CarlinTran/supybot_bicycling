@@ -32,20 +32,23 @@ class Bicycling(callbacks.Plugin):
                 'bike': '%s must have a derpy bike because I don\'t know what it is',
                 'reddit': '%s is not a redditor',
                 'strava': '%s is not a Strava user',
+                'lbs': '%s doesn\'t have a favorite LBS',
                 'bikephoto': '%s must have non-photogenic bike because I don\'t have a picture'}
         self.replies = {
                 'about': '%s wanted you to know: %s',
                 'location': '%s\'s location is %s',
                 'photo': '%s\'s photo is %s',
                 'bike': '%s has a %s',
+                'lbs': '%s\'s preferred LBS is: %s',
                 'reddit': '%s has been a redditor for %s days, has %s link karma and %s comment karma',
-                'strava': '%s\' Strava Profile is %s',
+                'strava': '%s\'s Strava Profile is %s',
                 'bikephoto': 'Here is %s\'s sexy ass bike: %s'}
         self.functions = {
                 'about': self._do_others ,
                 'location': self._do_others ,
                 'photo': self._do_others ,
                 'bike': self._do_others,
+                'lbs': self._do_others,
                 'reddit': self._do_reddit,
                 'strava': self._do_others,
                 'bikephoto': self._do_others
@@ -76,6 +79,7 @@ class Bicycling(callbacks.Plugin):
     about = wrap(_default, ['text'])
     location = wrap(_default, ['text'])
     bike = wrap(_default, ['text'])
+    lbs = wrap(_default, ['text'])
     photo = wrap(_default, ['text'])
     bikephoto = wrap(_default, ['text'])
     strava = wrap(_default, ['text'])
@@ -130,7 +134,7 @@ class Bicycling(callbacks.Plugin):
     def weather(self, irc, msg, args, location):
         '''<place>
 
-        gets weather for place
+        gets weather for place or for a stored !location for a nick
         '''
         user_location = str(self._get_data(msg.args[1].split()[1], "location")).strip()
         if user_location and user_location != "None":
