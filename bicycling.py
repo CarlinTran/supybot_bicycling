@@ -4,6 +4,7 @@ import string
 import re
 import os
 import requests
+import urllib2
 import httplib
 import json
 import time
@@ -16,6 +17,8 @@ import supybot.plugins as plugins
 import supybot.ircutils as ircutils
 import supybot.callbacks as callbacks
 import supybot.schedule as schedule
+
+
 
 class Bicycling(callbacks.Plugin):
     '''Add the help for '@plugin help Bicycling' here
@@ -141,8 +144,8 @@ class Bicycling(callbacks.Plugin):
 
         gets weather for place or for a stored !location for a nick
         '''
-        irc.reply("Look out the window you butthead (this is broken, working on fixing it)")
-        return
+        #irc.reply("Look out the window you butthead (this is broken, working on fixing it)")
+        #return
         user_location = str(self._get_data(msg.args[1].split()[1], "location")).strip()
         if user_location and user_location != "None":
             irc.reply(self.getWeather(user_location))
@@ -236,32 +239,31 @@ have a question, ask it and then stick around for an answer.' % msg.nick)
             return False
 
 
-
     def getWeather(self, area_dirty):
         """
         Returns the current weather in a given location
         """
-        # import re
-        import xmltodict  #importing here for easy sharing.   https://github.com/martinblech/xmltodict
-        try:
+        API_KEY = "77db38c049144227120609"
+        #try:
+        if True:
             area = re.sub('[\W_]+', '+', area_dirty)
-            resp = requests.get('http://www.google.com/ig/api?weather=%s' % area)
-            doc = xmltodict.parse(resp.text)
-            weather = doc['xml_api_reply']['weather']
-            current = weather['current_conditions']
-            forecast = weather['forecast_information']
-
+            url = 'http://free.worldweatheronline.com/feed/weather.ashx?q=%s&format=json&num_of_days=2&key=%s' % (area, API_KEY)
+            print url
+            file = urllib2.urlopen(url)
+            data = json.loads(file.read())
+            file.close()
+            current = data['data']['current_condition'][0]
             # Compile the great string to say the weather.
-            weather = u"In %s it's %sC(%sF). The Sky is %s. Current condition of %s." % (
-                forecast['city']['@data'],
-                current['temp_c']['@data'],
-                current['temp_f']['@data'],
-                current['condition']['@data'],
-                current['wind_condition']['@data'],
-                #forecast['current_date_time']['@data']
+            print current
+            weather = "In %s it's %s C (%s F). Most recent conditions are: %s" % (
+                area_dirty,
+                current['temp_C'],
+                current['temp_F'],
+                current['weatherDesc'][0]['value'],
             )
-        except Exception, e:
-            return u"Cannot find weather information for %s <%s>" %  (area_dirty, str(e))
+        #except Exception, e:
+            #print e
+            #return "Cannot find weather information for %s" % area_dirty
         return weather
 
 
