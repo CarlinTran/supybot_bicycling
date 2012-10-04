@@ -33,7 +33,7 @@ class Bicycling(callbacks.Plugin):
                 'reddit': '%s is not a redditor',
                 'strava': '%s is not a Strava user',
                 'lbs': '%s doesn\'t have a favorite LBS',
-                'bikephoto': '%s must have non-photogenic bike because I don\'t have a picture'}
+                'bikephoto': '%s must have a non-photogenic bike because I don\'t have a picture'}
         self.replies = {
                 'about': '%s wanted you to know: %s',
                 'location': '%s\'s location is %s',
@@ -107,6 +107,11 @@ class Bicycling(callbacks.Plugin):
         irc.reply(text, prefixNick=False, action=True, to='#/r/bicycling')
     hold = wrap(hold, ['nick'])
 
+    def ircstats(self, irc, msg, args):
+        irc.reply("View the stats here: http://socuteurl.com/bellybibbly", to='#/r/bicycling')
+    ircstats = wrap(ircstats)
+
+
     def beer(self, irc, msg, args, offender):
         '''<nick>
 
@@ -136,6 +141,8 @@ class Bicycling(callbacks.Plugin):
 
         gets weather for place or for a stored !location for a nick
         '''
+        irc.reply("Look out the window you butthead (this is broken, working on fixing it)")
+        return
         user_location = str(self._get_data(msg.args[1].split()[1], "location")).strip()
         if user_location and user_location != "None":
             irc.reply(self.getWeather(user_location))
@@ -245,7 +252,7 @@ have a question, ask it and then stick around for an answer.' % msg.nick)
             forecast = weather['forecast_information']
 
             # Compile the great string to say the weather.
-            weather = "In %s it's %sC(%sF). The Sky is %s. Current condition of %s." % (
+            weather = u"In %s it's %sC(%sF). The Sky is %s. Current condition of %s." % (
                 forecast['city']['@data'],
                 current['temp_c']['@data'],
                 current['temp_f']['@data'],
@@ -253,11 +260,12 @@ have a question, ask it and then stick around for an answer.' % msg.nick)
                 current['wind_condition']['@data'],
                 #forecast['current_date_time']['@data']
             )
-        except:
-            return "Cannot find weather information for %s" % area_dirty
+        except Exception, e:
+            return u"Cannot find weather information for %s <%s>" %  (area_dirty, str(e))
         return weather
 
 
 
 Class = Bicycling
 # vim:set shiftwidth=4 softtabstop=4 expandtab:
+#http://pastebin.ca/2178551
